@@ -1,0 +1,498 @@
+#include "Game.h"
+#include "libraries.h"
+
+//init
+void Game::initVar()
+{
+
+    this->spawnIntervalUpper = 10.0f;
+    this->spawnInterval = 0.0f;
+    this->maxInvaders = 10; //10
+    this->score = 0;
+    this->maxBullets = 25; // 25
+    this->spawnIntervalBullet = 10.0f;
+    this->Lives = 3;
+
+}
+
+void Game::initWindow()
+{
+    //Set dimensions
+    this->videoMode.height = 800.0f;
+    this->videoMode.width = 800.0f;
+    //init
+    this->window = new sf::RenderWindow(this->videoMode, "Space Invaders", sf::Style::Close | sf::Style::Titlebar);
+    //Set Frame Limit
+    this->window->setFramerateLimit(60);
+}
+
+void Game::initInvaders()
+{
+    //initializing invader size
+    this->invader.setSize(sf::Vector2f(35.0f, 25.0f));
+    //initializing invader position
+    //this->invader.setPosition(sf::Vector2f(400.0f, 100.0f));
+    this->invader.setOrigin(35.0f / 2, 25.0f / 2);
+    //assign texture
+    //this->invader.setFillColor(sf::Color::Green);
+
+}
+
+void Game::initShip()
+{
+    //initializing ship size
+    this->shipP.setSize(sf::Vector2f(65.0f, 65.0f));
+    //initializing ship position
+    this->shipP.setPosition(sf::Vector2f(400.0f, 750.0f));
+    this->shipP.setOrigin(65.0f / 2, 65.0f / 2);
+    //assign texture
+    //this->shipP.setFillColor(sf::Color::Green);
+
+
+}
+
+void Game::initTexture()
+{
+
+    this->shipTexture.loadFromFile("DurrShip.png");
+    this->shipP.setTexture(&shipTexture);
+
+    this->backgroundTexture.loadFromFile("background.gif");
+    this->background.setTexture(&backgroundTexture);
+
+    this->bulletTexture.loadFromFile("Bullet_Sprite.png");
+    this->bullet.setTexture(&bulletTexture);
+
+    this->invaderTextureG.loadFromFile("InvaderSpriteFinalG.png");
+    this->invader.setTexture(&invaderTextureG);
+    this->invaderTextureY.loadFromFile("InvaderSpriteFinalY.png");
+
+    this->invaderTextureP.loadFromFile("InvaderSpriteFinalP.png");
+
+
+}
+
+void Game::initBackground()
+{
+    //initializing ship size
+    this->background.setSize(sf::Vector2f(800.0f, 800.0f));
+    //initializing ship position
+    this->background.setPosition(sf::Vector2f(400.0f, 400.0f));
+    this->background.setOrigin(800.0f / 2, 800.0f / 2);
+    //assign texture
+    //this->background.setFillColor(sf::Color::Black);
+}
+
+void Game::initBullets()
+{
+    //initializing bullet size
+    this->bullet.setSize(sf::Vector2f(10.0f, 20.0f));
+    //initializing bullet position
+    //this->bullet.setPosition(sf::Vector2f(400.0f, 400.0f));
+    this->bullet.setOrigin(10.0f / 2, 20.0f / 2);
+    //assign texture
+    //this->bullet.setFillColor(sf::Color::Red);
+}
+
+void Game::initTexts()
+{
+    this->font.loadFromFile("dogica.ttf");
+
+    this->HealthText.setFont(font);
+    this->HealthText.setCharacterSize(26.0f);
+    this->HealthText.setFillColor(sf::Color::Red);
+    this->HealthText.setPosition(0.0f, 28.0f);
+
+    this->ScoreText.setFont(font);
+    this->ScoreText.setCharacterSize(26);
+    this->ScoreText.setFillColor(sf::Color::Red);
+
+    this->EndText.setFont(font);
+    this->EndText.setCharacterSize(26);
+    this->EndText.setFillColor(sf::Color::Red);
+    this->EndText.setPosition(115.0f, 400.0f);
+    this->EndText.setString("Press Space To Restart");
+
+    this->HelpText.setFont(font);
+    this->HelpText.setCharacterSize(26);
+    this->HelpText.setFillColor(sf::Color::Red);
+    this->HelpText.setPosition(535.0f, .0f);
+    this->HelpText.setString("H For Help");
+
+    this->Movement_KeyOne.setFont(font);
+    this->Movement_KeyOne.setCharacterSize(26);
+    this->Movement_KeyOne.setFillColor(sf::Color::Red);
+    this->Movement_KeyOne.setPosition(535.0f, 26.0f);
+    this->Movement_KeyOne.setString("D To Move");
+
+    this->Movement_KeyTwo.setFont(font);
+    this->Movement_KeyTwo.setCharacterSize(26);
+    this->Movement_KeyTwo.setFillColor(sf::Color::Red);
+    this->Movement_KeyTwo.setPosition(535.0f, 52.0f);
+    this->Movement_KeyTwo.setString("A To Move");
+
+    this->Shoot.setFont(font);
+    this->Shoot.setCharacterSize(26);
+    this->Shoot.setFillColor(sf::Color::Red);
+    this->Shoot.setPosition(535.0f, 78.f);
+    this->Shoot.setString("W To Shoot");
+
+}
+
+//const
+Game::Game()
+{
+    this->initTexts();
+    this->initInvaders();
+    this->initBullets();
+    this->initVar();
+    this->initWindow();
+    this->initShip();
+    this->initTexture();
+    this->initBackground();
+
+}
+
+//decont 
+Game::~Game()
+{
+    delete this->window;
+}
+
+//Get window status
+const bool Game::active() const
+{
+    return this->window->isOpen();
+}
+
+void Game::updateScore()
+{
+    if (this->Lives == 0)
+    {
+        int i;
+        int j;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        {
+            Lives = 3;
+            this->score = 0;
+
+        }
+        for (i = 0; invaders.size(); i++)
+        {
+            this->invaders.erase(this->invaders.begin());
+        }
+        for (j = 0; bullets.size(); j++)
+        {
+            this->bullets.erase(this->bullets.begin());
+        }
+    }
+}
+
+void Game::bubbleSort(int)
+{
+
+}
+
+bool Game::isPlaying()
+{
+    if (this->Lives == 0)
+    {
+        updateScore();
+        return false;
+
+    }
+}
+
+
+//update
+
+void Game::updateMovement()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+    {
+        this->shipP.move(-5.0f, 0.0f);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+    {
+        this->shipP.move(5.0f, 0.0f);
+    }
+    if (shipP.getPosition().x < 0.f)
+    {
+        this->shipP.move(5.0f, 0.0f);
+    }
+    if (shipP.getPosition().x > 800.f)
+    {
+        this->shipP.move(-5.0f, 0.0f);
+    }
+
+}
+
+void Game::spawnInvaders()
+{
+
+
+    this->invader.setPosition
+    (
+        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->invader.getSize().x)),
+        0.0f
+    );
+    
+   
+
+    this->invaders.push_back(this->invader);
+}
+
+void Game::updateInvaders()
+{
+    if (this->invaders.size() < this->maxInvaders)
+    {
+        if (this->spawnInterval >= this->spawnIntervalUpper)
+        {
+            this->spawnInvaders();
+            this->spawnInterval = 0.0f;
+
+        }
+        else
+        {
+
+
+            this->spawnInterval += 0.2f;
+
+        }
+    }
+    for (auto& i : this->invaders)
+    {
+        i.move(0.0f, 3.2f);
+
+    }
+}
+
+void Game::updateShootingPoint()
+{
+    sf::Vector2f shipPos = shipP.getPosition();
+    this->shipshootingPoint = (sf::Vector2f(shipPos.x, shipPos.y - 25.0f));
+}
+
+void Game::spawnBullets()
+{
+    this->bullet.setPosition(this->shipshootingPoint);
+
+    this->bullets.push_back(this->bullet);
+}
+
+void Game::updateBullets()
+{
+    if (this->bullets.size() < this->maxBullets)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        {
+
+            if (this->spawnIntervalBullet >= 10.0f)
+            {
+                this->spawnBullets();
+                this->spawnIntervalBullet = 0.0f;
+
+            }
+            else
+            {
+                this->spawnIntervalBullet += 0.5f;
+
+            }
+
+        }
+        else
+        {
+            spawnIntervalBullet = 10.0f;
+        }
+
+
+        sf::Vector2f bulletPos = bullet.getPosition();
+
+    }
+    for (auto& i : this->bullets)
+    {
+        i.move(0.0f, -7.5f);
+    }
+
+}
+
+void Game::updateCollision()
+{
+
+    int i = 0;
+    int j = 0;
+
+    for (j = 0; j < invaders.size(); j++)
+    {
+        for (i = 0; i < bullets.size(); i++)
+        {
+            if (this->bullets[i].getGlobalBounds().intersects(this->invaders[j].getGlobalBounds()))
+            {
+               
+                this->invaders.erase(this->invaders.begin() + j);
+             
+                this->bullets.erase(this->bullets.begin() + i);
+
+                j--;
+
+                score += 10;
+
+                break;
+            }
+        }
+
+
+    }
+
+
+}
+
+void Game::updateMapEntity()
+{
+    int p;
+    int r;
+    for (p = 0; p < invaders.size(); p++)
+    {
+        if (this->invaders[p].getPosition().y > this->window->getSize().y)
+        {
+            this->invaders.erase(this->invaders.begin() + p);
+            this->Lives -= 1;
+        }
+    }
+    for (r = 0; r < bullets.size(); r++)
+    {
+        if (this->bullets[r].getPosition().y < this->window->getSize().y - 800.0f)
+        {
+            this->bullets.erase(this->bullets.begin() + r);
+        }
+    }
+}
+
+void Game::updateTexts()
+{
+
+    std::stringstream ssScore;
+    ssScore << score;
+    std::string Sscore;
+    ssScore >> Sscore;
+
+    std::stringstream ssHealth;
+    ssHealth << Lives;
+    std::string SLives;
+    ssHealth >> SLives;
+
+    this->HealthText.setString("Lives :" + SLives);
+    this->ScoreText.setString("Score :" + Sscore);
+}
+
+void Game::pollEvents()
+{
+    while (this->window->pollEvent(this->evnt))
+    {   //close window if x pressed and break event
+        switch (this->evnt.type)
+        {
+        case sf::Event::Closed:
+            this->window->close();
+            break;
+        case sf::Event::Resized: //debug I guess
+            std::cout << "New Window Width :" << evnt.size.width << " New Window Height :" << evnt.size.height << std::endl;
+            printf("New window width :%i New window height :%i\n", evnt.size.width, evnt.size.height);
+            break;
+            /*case sf::Event::TextEntered:
+                if (evnt.text.unicode < 128) {
+                    printf("%c", evnt.text.unicode);
+                }*/
+                //allow pressing of X top right
+        case sf::Event::KeyPressed:
+            if (this->evnt.key.code == sf::Keyboard::Escape)
+            {
+                this->window->close();
+            }
+
+            break;
+        }
+
+    }
+}
+
+void Game::update()
+{
+    //poll
+    
+
+    //updates
+
+    this->updateMovement();
+
+    this->updateShootingPoint();
+
+    this->updateBullets();
+
+    this->updateInvaders();
+
+    //Collisions update
+
+
+    //debug
+    /*std::cout << "Mouse pos: "
+      << sf::Mouse::getPosition(*this->window).x << " "
+      << sf::Mouse::getPosition(*this->window).y << std::endl;*/
+}
+
+void Game::updateCrucial()
+{
+    this->pollEvents();
+    this->updateTexts();
+    this->updateCollision();
+    this->updateMapEntity();
+}
+//close update
+
+//render
+void Game::renderBullets()
+{
+    for (auto& i : this->bullets)
+    {
+
+        this->window->draw(i);
+    }
+}
+
+void Game::renderInvaders()
+{
+    for (auto& i : this->invaders)
+    {
+        this->window->draw(i);
+    }
+}
+
+void Game::render()
+{
+
+    this->window->clear(sf::Color::Black);
+
+    this->window->draw(this->background);
+    this->renderBullets();
+    //this->window->draw(this->invader);
+    this->renderInvaders();
+    this->window->draw(this->shipP);
+    this->window->draw(this->HealthText);
+    this->window->draw(this->ScoreText);
+    if (this->Lives == 0)
+    {
+        this->window->draw(this->EndText);
+    }
+    this->window->draw(HelpText);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::H))
+    {
+
+        this->window->draw(Movement_KeyOne);
+        this->window->draw(Movement_KeyTwo);
+        this->window->draw(Shoot);
+
+    }
+
+    this->window->display();
+}
+//close render
