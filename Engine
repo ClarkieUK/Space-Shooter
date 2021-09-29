@@ -1,0 +1,35 @@
+#include "libraries.h"
+#include <iostream>
+
+
+int main()
+{
+
+    std::srand(static_cast<unsigned>(time(NULL)));
+    //creating game window
+    Game task;
+
+    // functions while window is active
+    while (task.active())
+    {
+
+        //update
+        if (task.isPlaying())
+        {
+            task.update();
+        }
+        task.updateCrucial();
+
+
+        //render
+        task.render();
+
+
+
+    }
+
+
+
+}
+
+
