@@ -1,0 +1,101 @@
+#pragma once
+#include "libraries.h"
+#include <iostream>
+//Rendering and producing game window
+
+class Game
+{
+private:
+
+	//Var
+	sf::RenderWindow* window;
+	sf::VideoMode videoMode;
+	sf::Event evnt;
+
+	//shipPos
+	sf::Vector2f shipshootingPoint;
+
+	//Big Brain Plays
+	float spawnInterval;
+	float spawnIntervalUpper;
+	float spawnIntervalBullet;
+	int maxInvaders;
+	int score;
+	int maxBullets;
+	int Lives;
+
+
+
+	//obj
+	sf::RectangleShape shipP;
+	sf::RectangleShape invader;
+	std::vector<sf::RectangleShape>invaders;
+	sf::RectangleShape background;
+	sf::RectangleShape bullet;
+	std::vector<sf::RectangleShape>bullets;
+
+	//textures
+	sf::Texture shipTexture;
+	sf::Texture backgroundTexture;
+	sf::Texture bulletTexture;
+	sf::Texture invaderTextureG;
+	sf::Texture invaderTextureY;
+	sf::Texture invaderTextureP;
+
+	//texts
+	sf::Font font;
+	sf::Text HealthText;
+	sf::Text ScoreText;
+	sf::Text EndText;
+	sf::Text HelpText;
+	sf::Text Movement_KeyOne;
+	sf::Text Movement_KeyTwo;
+	sf::Text Shoot;
+
+
+	//init
+	void initVar();
+	void initWindow();
+	void initShip();
+	void initInvaders();
+	void initBullets();
+	void initTexture();
+	void initBackground();
+	void initTexts();
+
+public:
+
+
+	//Const
+	Game();
+
+	//Destr
+	virtual ~Game();
+
+	//Get
+	const bool active() const;
+	bool isPlaying();
+	void updateScore();
+
+	//sort
+	void bubbleSort(int);
+
+	//define functions
+	void updateTexts();
+	void updateMovement();
+	void updateShootingPoint();
+	void updateBullets();
+	void updateMapEntity();
+	void updateCollision();
+	void spawnBullets();
+	void updateInvaders();
+	void spawnInvaders();
+	void pollEvents();
+	void update();
+	void updateCrucial();
+	void renderBullets();
+	void renderInvaders();
+	void render();
+
+};
+
